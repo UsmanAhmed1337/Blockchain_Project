@@ -62,11 +62,16 @@ app.get('/patientRecords/:patientId', async (req, res) => {
     const patientId = req.params.patientId;
     try {
         const record = await patientRecordsContract.methods.getRecord(patientId).call();
-        res.json(record);
+        console.log("record", record);
+        res.json({
+            "diagnosis": record.diagnosis,
+            "treatmentPlan" : record.treatmentPlan,
+        });
     } catch (error) {
         res.status(500).json({ message: 'Failed to retrieve record', error: error.toString() });
     }
 });
+
 
 // Endpoint to add an item to the supply chain
 app.post('/supplyChain/addItem', async (req, res) => {
