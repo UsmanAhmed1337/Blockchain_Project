@@ -1,4 +1,6 @@
 const express = require('express');
+const mongoose = require('mongoose');
+
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -10,6 +12,24 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
+// Connect to MongoDB
+mongoose.connect('mongodb://127.0.0.1:27017/bcproject', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 30000, // Optional: increase the timeout to 30 seconds
+});
+
+const db = mongoose.connection;
+
+// MongoDB connection events
+db.on('error', (error) => {
+  console.error('Error connecting to MongoDB:', error);
+});
+
+db.once('open', () => {
+    console.log('Connected to MongoDB');
+});
 
 // Web3 and contract setup
 const web3 = new Web3(new Web3.providers.HttpProvider(process.env.BLOCKCHAIN_URL));
